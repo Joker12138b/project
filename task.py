@@ -6,7 +6,7 @@
 """
 class Task:
     def __init__(self, name, completed=False):
-        """初始化任务的名臣和完成状态"""
+        """初始化任务的名称和完成状态"""
         self.name = name
         self.completed = completed
 
@@ -14,11 +14,12 @@ class Task:
         """ 定义任务的字符串表示 """
         return f"{self.name} - 状态: {'完成' if self.completed else '未完成'}"
 
-    def to_edit(self):
+    @classmethod
+    def to_edit(cls, task):
         """将任务转化为字典"""
         return {
-            "name": self.name,
-            "completed": self.completed
+            "name": task.name,
+            "completed": task.completed
         }
 
     @classmethod
@@ -34,6 +35,8 @@ class Task:
         """ 标记任务为完成"""
         self.completed = False
 
+
+"""主要是进行继承、重写、多态的学习"""
 class SubTask(Task):
     """ 子任务类  继承自Task """
     def __init__(self, name, parent_task, completed=False):
@@ -43,3 +46,10 @@ class SubTask(Task):
     def __str__(self):
         """ 定义子任务的字符串表示 """
         return f"子任务: {self.name}, 属于: {self.parent_task.name}, 状态: {'完成' if self.completed else '未完成'}"
+
+    @classmethod
+    def to_edit(cls, task):
+        """将子任务转化为字典格式"""
+        task_dict = super().to_edit()
+        task_dict["parent_task"] = cls.parent_task.name
+        return task_dict

@@ -6,25 +6,17 @@
 """
 import json
 import os
-from task import Task
+from task import Task, SubTask
 from utils.task_utils import TaskUtils
 
 dataFile = './data/data.json'
 
 
 def print_welcome():
-    print("=" * 50)  # 设置分隔符
-    print("欢迎使用任务管理系统".center(50, "-"))
-    print("=" * 50)  # 设置分隔符
-
-
-# def display_tasks(tasks):
-#     """ 显示任务列表 """
-#     if not tasks:
-#         print("没有任务")
-#         return
-#     for index, task in enumerate(tasks, 1):
-#         print(f"{index}. {task}")
+    # print("=" * 50)  # 设置分隔符
+    # print("欢迎使用任务管理系统".center(50, "-"))
+    # print("=" * 50)  # 设置分隔符
+    print_separator("欢迎使用任务管理系统")
 
 
 def load_tasks():
@@ -45,7 +37,7 @@ def load_tasks():
 
 def save_tasks(tasks):
     """保存任务数据"""
-    task_data = [Task.to_edit() for task in tasks]
+    task_data = [Task.to_edit(task) for task in tasks]
     # task_data = [{"name": task.name, "completed": task.completed} for task in tasks]
     with open(dataFile, 'w', encoding="utf-8") as file:
         json.dump(task_data, file, ensure_ascii=False, indent=4)
@@ -130,11 +122,13 @@ def display_tasks(tasks):
         print("没有任务")
         return
 
-    print("\n任务信息统计：")
-    print("=" * 50)
+    print_separator("当前任务列表")
+    # print("\n任务信息统计：")
+    # print("=" * 50)
     for index, task in enumerate(tasks, 1):
-        status = "\033[92m完成\033[0m" if task.completed else "\033[91m未完成\033[0m"
-        print(f"{str(index).ljust(3)} | {task.name.ljust(30)} | {status}")
+        # status = "\033[92m完成\033[0m" if task.completed else "\033[91m未完成\033[0m"
+        # print(f"{str(index).ljust(3)} | {task.name.ljust(30)} | {status}")
+        print(format_task(index, task))
     print("=" * 50)
 
 def display_task_stats(tasks):
@@ -142,12 +136,57 @@ def display_task_stats(tasks):
     total = len(tasks)
     completed = sum(1 for task in tasks if task.completed)
     incomplete = total - completed
-    print("\n任务统计")
-    print("=" * 50)
+    # print("\n任务统计")
+    # print("=" * 50)
+    print_separator("任务统计")
     print(f"总任务数: {total}")
     print(f"已完成任务数: {completed}")
     print(f"未完成任务数: {incomplete}")
     print("=" * 50)
+
+
+def print_separator(title="", width=50):
+    """打印带标题的分隔符"""
+    # print("=" * width)
+    if title:
+        print(f"{title}".center(width, " "))
+    print("=" * width)
+
+
+def format_task(index, task):
+    """格式化任务信息"""
+    status = "\033[92m完成\033[0m" if task.completed else "\033[91m未完成\033[0m"
+    return f"{str(index).ljust(3)} | {task.name.ljust(30)} | {status}"
+
+
+def add_subtask(tasks):
+    """添加子任务"""
+    if not tasks:
+        print("任务列表为空  无法添加")
+        return
+
+    print("\n选择一个父任务：")
+    for index, task in enumerate(tasks, 1):
+        print(f"{index}.{task}")
+
+    try:
+        parent_id = int(input("请输入父任务编号: ")) - 1
+        if 0 <= parent_id < len(tasks):
+            parent_task = tasks[parent_id]
+            subtask_name = input("请输入子任务名称: ")
+            new_subtask = SubTask(subtask_name, parent_task)
+            tasks.append(new_subtask)
+            save_tasks(tasks)
+            print(f"子任务'{subtask_name}'已添加")
+        else:
+            print("无效的任务编号")
+    except ValueError:
+        print("请输入有效的任务编号！")
+
+
+
+
+
     # print(f"总任务数：{len(tasks)}")
     # print(f"已完成任务数：{TaskUtils.count_completed_tasks(tasks)}")
     # print(f"未完成任务数：{TaskUtils.count_incomplete_tasks(tasks)}\n")

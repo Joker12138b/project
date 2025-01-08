@@ -21,7 +21,8 @@ def main():
         print("1. 添加任务")
         print("2. 编辑任务")
         print("3. 删除任务")
-        print("4. 退出")
+        print("4. 添加子任务")
+        print("5. 退出")
         choice = input("请选择操作: ")
         if choice == '1':
             add_task(task)
@@ -30,7 +31,10 @@ def main():
         elif choice == '3':
             remove_task(task)
         elif choice == '4':
-            print("感谢使用此次程序，再见")
+            add_subtask(task)
+        elif choice == '4':
+            print_separator("再见!")
+            save_tasks(task)
             break
         else:
             print("无效的选择，请重新输入")
