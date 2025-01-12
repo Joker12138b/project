@@ -4,10 +4,13 @@
 @author:cxt
 @time:2025-01-04
 """
-from utils.helper import *
+# from utils.helper import *
+from utils.display import *
+from utils.file_ops import *
+from utils.task_ops import *
+
 
 def main():
-    # 书写一个函数进行输出   无返回值
     print_welcome()
 
     # 加载任务数据
@@ -16,7 +19,6 @@ def main():
     while True:
         display_tasks(task)
         display_task_stats(task)
-        # ds(task)
         print("\n菜单")
         print("1. 添加任务")
         print("2. 编辑任务")
@@ -27,12 +29,12 @@ def main():
         if choice == '1':
             add_task(task)
         elif choice == '2':
-            edit_task(task)
+            search_by_tag(task)
         elif choice == '3':
             remove_task(task)
         elif choice == '4':
             add_subtask(task)
-        elif choice == '4':
+        elif choice == '5':
             print_separator("再见!")
             save_tasks(task)
             break

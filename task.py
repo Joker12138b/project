@@ -5,27 +5,52 @@
 @time:2025-01-07
 """
 class Task:
-    def __init__(self, name, completed=False):
+    def __init__(self, name, completed=False, tags=None):
         """初始化任务的名称和完成状态"""
         self.name = name
         self.completed = completed
+        self.tags = set(tags) if tags else set()
 
     def __str__(self):
         """ 定义任务的字符串表示 """
-        return f"{self.name} - 状态: {'完成' if self.completed else '未完成'}"
+        tags_str = ", ".join(self.tags) if self.tags else "无标签"
+        return f"任务名称: {self.name}, 状态: {'完成' if self.completed else '未完成'}, 标签: {tags_str}"
 
     @classmethod
     def to_edit(cls, task):
         """将任务转化为字典"""
         return {
             "name": task.name,
-            "completed": task.completed
+            "completed": task.completed,
+            "tags": list(task.tags) if task.tags else []
         }
 
     @classmethod
     def from_dict(cls, task_dict):
         """从字典中创建任务"""
-        return cls(task_dict["name"], task_dict["completed"])
+        return cls(task_dict["name"], task_dict["completed"], task_dict.get("tags", []))
+
+    def add_tag(self, tag):
+        """添加标签"""
+        self.tags.add(tag)
+
+    def remove_tag(self, tag):
+        """删除标签"""
+        self.tags.discard(tag)
+
+
+    def to_dict(self):
+        """将任务转化为字典"""
+        return {
+            "name": self.name,
+            "completed": self.completed,
+            "tags": list(self.tags)
+        }
+
+    @classmethod
+    def from_dict(cls, task_dict):
+        """从字典中创建任务"""
+        return cls(task_dict["name"], task_dict["completed"], task_dict.get("tags", []))
 
     def mark_completed(self):
         """ 标记任务为完成"""
